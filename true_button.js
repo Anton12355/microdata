@@ -1,6 +1,6 @@
 (function () {
-	tinymce.PluginManager.add( 'true_mce_button', function ( editor ) { // id кнопки true_mce_button должен быть везде один и тот же
-		editor.addButton( 'true_mce_button', { // id кнопки true_mce_button
+	tinymce.PluginManager.add( 'true_mce_button', function ( editor ) { // ID кнопки true_mce_button должен быть везде один и тот же
+		editor.addButton( 'true_mce_button', { // ID кнопки true_mce_button
 			icon : 'home', // мой собственный CSS класс, благодаря которому я задам иконку кнопки
 			type : 'menubutton',
 			title : 'Вставить контактные данные', // всплывающая подсказка при наведении

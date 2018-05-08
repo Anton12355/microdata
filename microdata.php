@@ -11,20 +11,23 @@
  * Text Domain:  microdata
  * Domain Path:  /languages
  */
+
 namespace microdata;
 
 function contacts_template( $atts ) {
 	$atts = shortcode_atts( array(
-		//Значения по умолчанию
-		'company_name'        => '"Лучшие телефоны"',
-		'street'      => 'ул. Торговая, д. 1',
-		'postal_code' => '123456',
-		'locality'    => 'Москва',
-		'phone'       => '+7 495 123–45–67',
-		'fax'         => '+7 495 123–45–67',
-		'email'       => 'admin@phones-best.ru',
+		// Значения по умолчанию
+		'company_name' => '"Лучшие телефоны"',
+		'street'       => 'ул. Торговая, д. 1',
+		'postal_code'  => '123456',
+		'locality'     => 'Москва',
+		'phone'        => '+7 495 123–45–67',
+		'fax'          => '+7 495 123–45–67',
+		'email'        => 'admin@phones-best.ru',
 	), $atts, 'contacts' );
 
+	/* HTML-шаблон, где в тэгах добалены атрибуты микроразметки. Внутри тегов будут отбражаться данные,
+	введённые администратором сайта в качестве атрибутов шорткода "contacts". */
 	$out = '<div class="contacts" itemscope itemtype="http://schema.org/Organization">' .
 	       '<div class="contacts__company">ЗАО <span itemprop="name">' . esc_html( $atts['company_name'] ) . '</span></div>' .
 	       'Контакты:' .
@@ -42,34 +45,39 @@ function contacts_template( $atts ) {
 	return $out;
 }
 
+// Добавление шорткода, описанного в функции "contacts_template"
 add_shortcode( 'contacts', '\microdata\contacts_template' );
 
 // Хуки
 function true_add_mce_button() {
-	// проверяем права пользователя - может ли он редактировать посты и страницы
-	if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+	// Проверяем права пользователя - может ли он редактировать посты и страницы
+	if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
 		return; // если не может, то и кнопка ему не понадобится, в этом случае выходим из функции
 	}
-	// проверяем, включен ли визуальный редактор у пользователя в настройках (если нет, то и кнопку подключать незачем)
+	// Проверяем, включен ли визуальный редактор у пользователя в настройках (если нет, то и кнопку подключать незачем)
 	if ( 'true' == get_user_option( 'rich_editing' ) ) {
 		add_filter( 'mce_external_plugins', '\microdata\true_add_tinymce_script' );
 		add_filter( 'mce_buttons', '\microdata\true_register_mce_button' );
 	}
 }
-add_action('admin_head', '\microdata\true_add_mce_button');
+
+add_action( 'admin_head', '\microdata\true_add_mce_button' );
 
 // В этом функции указываем ссылку на JavaScript-файл кнопки
 function true_add_tinymce_script( $plugin_array ) {
-	$plugin_array['true_mce_button'] = get_stylesheet_directory_uri() .'/js/true_button.js'; // true_mce_button - идентификатор кнопки
+	$plugin_array['true_mce_button'] = get_stylesheet_directory_uri() . '/js/true_button.js'; // true_mce_button - идентификатор кнопки
+
 	return $plugin_array;
 }
 
 // Регистрируем кнопку в редакторе
 function true_register_mce_button( $buttons ) {
 	array_push( $buttons, 'true_mce_button' ); // true_mce_button - идентификатор кнопки
+
 	return $buttons;
 }
 
+// Подключение стилей кнопки
 function enqueue_styles() {
 	wp_enqueue_style( 'microdata-style', plugin_dir_url( __FILE__ ) . 'css/style.css' );
 
